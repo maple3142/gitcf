@@ -12,7 +12,7 @@ const HOME_PAGE = String.raw`
 <body>
   <form id="form">
     <label for="url">GitHub file url:</label>
-    <input name="url" type="url" id="url" size="100">
+    <input name="url" type="url" id="url" size="100" placeholder="https://github.com/maple3142/gitcf/blob/master/gitcf.js (<-- Press enter to try this file out)">
     <button type="submit">Get a sharable url with proper <strong>Content-Type</strong></button>
   </form>
   <div>GitCF is a service that is similar to <a href="https://rawgit.com/">RawGit</a>, but this one is running on <a href="https://workers.cloudflare.com/">CloudFlare Workers</a>.</div>
@@ -21,7 +21,7 @@ const HOME_PAGE = String.raw`
   <script>
   form.onsubmit=e=>{
     e.preventDefault()
-    const u=new URL(form.url.value)
+    const u=new URL(form.url.value || 'https://github.com/maple3142/gitcf/blob/master/gitcf.js')
     if(u.hostname==='github.com'){
       u.pathname=u.pathname.replace(/^\/([0-9A-Za-z-]{1,39})\/([0-9A-Za-z-\.]{1,100})\/blob/,'/$1/$2/')
     }
@@ -89,7 +89,8 @@ async function handleRequest(request) {
   if (url.pathname === '/') {
     return new Response(HOME_PAGE, {
       headers: {
-        'Content-Type': 'text/html'
+        'Content-Type': 'text/html',
+        'Cache-Control': 'max-age=3600' // 1 hour
       }
     })
   }
