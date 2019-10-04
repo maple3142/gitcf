@@ -117,7 +117,7 @@ async function handleRequest(request) {
       headers: {
         Location: `/${owner}/${repo}/${result.sha}/${path}`
       },
-      status: 301
+      status: 302
     })
   }
   else {
