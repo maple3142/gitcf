@@ -23,7 +23,7 @@ const HOME_PAGE = String.raw`
     e.preventDefault()
     const u=new URL(form.url.value || 'https://github.com/maple3142/gitcf/blob/master/gitcf.js')
     if(u.hostname==='github.com'){
-      u.pathname=u.pathname.replace(/^\/([0-9A-Za-z-]{1,39})\/([0-9A-Za-z-\.]{1,100})\/blob/,'/$1/$2/')
+      u.pathname=u.pathname.replace(/^\/([0-9A-Za-z-]{1,39})\/([0-9A-Za-z-_\.]{1,100})\/blob/,'/$1/$2/')
     }
     u.hostname=location.hostname
     location.href=u.toString()
@@ -58,9 +58,9 @@ const blacklist = new Set([
 ])
 
 const GIST_PERMAL = /^\/[0-9A-Za-z-]{1,39}\/[0-9a-f]{1,100}\/raw\/[0-9a-f]{40}\/.*$/ // /:owner/:id/raw/:sha/:path
-const GITHUB_PERMAL = /^\/[0-9A-Za-z-]{1,39}\/[0-9A-Za-z-\.]{1,100}\/[0-9a-f]{40}\/.*$/ // /:owner/:repo/:sha/:path
-const GITHUB_NON_PERMAL = /^\/[0-9A-Za-z-]{1,39}\/[0-9A-Za-z-\.]{1,100}\/[0-9A-Za-z-]{1,100}\/.*$/ // /:owner/:repo/:branch/:path
-const GITHUB_NON_PERMAL_GROUPS = /^\/([0-9A-Za-z-]{1,100})\/([0-9A-Za-z-\.]{1,100})\/([0-9A-Za-z-]{1,100})\/(.*)$/ // /(:owner)/(:repo)/(:branch)/(:path)
+const GITHUB_PERMAL = /^\/[0-9A-Za-z-]{1,39}\/[0-9A-Za-z-_\.]{1,100}\/[0-9a-f]{40}\/.*$/ // /:owner/:repo/:sha/:path
+const GITHUB_NON_PERMAL = /^\/[0-9A-Za-z-]{1,39}\/[0-9A-Za-z-_\.]{1,100}\/[0-9A-Za-z-]{1,100}\/.*$/ // /:owner/:repo/:branch/:path
+const GITHUB_NON_PERMAL_GROUPS = /^\/([0-9A-Za-z-]{1,100})\/([0-9A-Za-z-_\.]{1,100})\/([0-9A-Za-z-]{1,100})\/(.*)$/ // /(:owner)/(:repo)/(:branch)/(:path)
 
 function nope() {
   return new Response('Nope!', {
@@ -132,7 +132,7 @@ async function handleRequest(request) {
       status: 301
     })
   }
-  const contentType = mime.getType(ext)
+  const contentType = mime.getType(ext) || 'text/plain'
   const response = await fetch(resouseUrl) // 1 year
   if (response.status !== 200) {
     return new Response(response.body, {
