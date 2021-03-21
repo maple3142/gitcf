@@ -146,6 +146,7 @@ async function handleRequest(request) {
   const newResponse = new Response(response.body, {
     headers: {
       'Access-Control-Allow-Origin': '*',
+      'Accept-Ranges': 'bytes',
       'Content-Type': `${contentType}; charset=utf-8`,
       'Cache-Control': 'max-age=31536000' // 1 year
     },
