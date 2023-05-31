@@ -17,16 +17,17 @@ const HOME_PAGE = String.raw`
   </form>
   <div>GitCF is a service that is similar to <a href="https://rawgit.com/">RawGit</a>, but this one is running on <a href="https://workers.cloudflare.com/">CloudFlare Workers</a>.</div>
   <div>The source code of the script is located at <a href="https://github.com/maple3142/gitcf">maple3142/gitcf</a>, and you can simply copy and paste the script to Workers editor to get your own instance.</div>
-  <div>Currently, this is running on CloudFlare Workers' <strong>Free</strong> plan, so don't rely on this.</div>
+  <div>Currently, this is running on CloudFlare Workers' <strong>Free</strong> plan, so don't rely on this instance being available.</div>
+  <div>Please don't try to use this instance as a GitHub proxying CDN on a website that you expect a high amount of traffic too. Consider deploying this yourself and use that instead.</div>
   <script>
-  form.onsubmit=e=>{
+  form.onsubmit = e => {
     e.preventDefault()
-    const u=new URL(form.url.value || 'https://github.com/maple3142/gitcf/blob/master/gitcf.js')
-    if(u.hostname==='github.com'){
-      u.pathname=u.pathname.replace(/^\/([0-9A-Za-z-]{1,39})\/([0-9A-Za-z-_\.]{1,100})\/blob/,'/$1/$2/')
+    const u = new URL(form.url.value || 'https://github.com/maple3142/gitcf/blob/master/gitcf.js')
+    if (u.hostname === 'github.com') {
+      u.pathname = u.pathname.replace(/^\/([0-9A-Za-z-]{1,39})\/([0-9A-Za-z-_\.]{1,100})\/blob/, '/$1/$2/')
     }
-    u.hostname=location.hostname
-    location.href=u.toString()
+    u.hostname = location.hostname
+    location.href = u.toString()
   }
   </script>
 </body>
@@ -106,7 +107,7 @@ async function handleRequest(request) {
     const [_, owner, repo, branch, path] = GITHUB_NON_PERMAL_GROUPS.exec(url.pathname)
     const resp = await fetch(`https://api.github.com/repos/${owner}/${repo}/commits/${branch}`, {
       headers: {
-        'User-Agent': 'gh.maple3142.net'
+        'User-Agent': 'gitcf'
       }
     })
     if (!resp.ok) {
